@@ -7,7 +7,7 @@ app = FastAPI()
 
 clients = {}
 
-async def send_to_client(client):
+async def send_to_client(client, data):
     try:
         await client.send_text(data)
     except:
@@ -26,7 +26,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 out_tasks = []
                 for client, room in clients.items():
                     if(room == clients[websocket] and (clients[websocket] != "" and client != websocket)):
-                        out_tasks += [send_to_client(client)]
+                        out_tasks += [send_to_client(client, data)]
                 await gather(*out_tasks)
     except WebSocketDisconnect:
         clients[websocket] = ""
